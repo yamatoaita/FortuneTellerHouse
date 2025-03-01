@@ -1038,6 +1038,11 @@ class DialogueSystem{
                 case "command_booked_uranai":
                     
                     this.contents_of_speech = this.contents_of_speech.replace("#command_booked_uranai#",this.booked_fortuneteller_name);
+                    break
+                case "command_random_hour" :
+                    this.MASA_RND_HOUR = Math.floor(Math.random() * 24).toString();
+                    this.contents_of_speech = this.contents_of_speech.replace("#command_random_hour#",this.MASA_RND_HOUR);
+                    
             }
         });        
     }
@@ -1615,6 +1620,11 @@ class DialogueSystem{
          this.pic4.addEventListener("click", ()=>{
             this.entry.value = this.pic_lists[3][1];  
          });
+
+        const SINNGANN_NO_MASA = document.getElementById("pic_receptionist");
+        SINNGANN_NO_MASA.addEventListener("click",()=>{
+            this.entry.value = "心眼のマサ";
+        });
          //画像をクリックするだけでentryに入力するようにする。
 
          this.btn1.textContent = "決定";
@@ -1645,7 +1655,11 @@ class DialogueSystem{
         var flg = false;
 
         for(let i = 0; i <= 3; i++){
-            if(user_input == this.pic_lists[i][1]){
+            if(user_input == "心眼のマサ"){
+                flg = true;
+                this.selected_fortune_teller = "sinngann_no_masa.png";
+                break;
+            }else if(user_input == this.pic_lists[i][1]){
                 flg = true;
                 this.selected_fortune_teller = this.pic_lists[i][0];
                 break;
@@ -1748,6 +1762,9 @@ class DialogueSystem{
                 break;
             case "usatyann":
                 this.uranai_usatyann();
+                break;
+            case "sinngann_no_masa":
+                this.uranai_sinngann_no_masa();
                 break;
 
         }
@@ -2093,6 +2110,30 @@ class DialogueSystem{
         
         this.modal.innerHTML = result;
     };
+
+    uranai_sinngann_no_masa(){
+       
+        var list_result = [
+            "とても素敵なことに出会うでしょう",
+            "良いアイデアが舞い降りるでしょう",
+            "一日の悩みがほどけるでしょう",
+            "眠くなるでしょう",
+            "のどが乾くでしょう",
+            "目がしょぼしょぼするでしょう",
+            "光が見えるでしょう",
+            "あなたの宝物を見かけるでしょう",
+            "目が覚めるでしょう",
+            "おなかがすくでしょう",
+            "おなかがいっぱいでしょう",
+            "寒さを感じるでしょう",
+            "何気ない日常に喜びを覚えるでしょう",
+        ];
+        
+        var result = `<br><br>明日の${this.MASA_RND_HOUR}時、あなたは<br>${list_result[this.uranai_fix_ind * this.MASA_RND_HOUR * 12 % list_result.length]}`
+        
+        this.modal.innerHTML = result;
+    };
+
 }                                                                     
 
 class SiteSystem{
@@ -2522,6 +2563,30 @@ class SiteSystem{
 
             this.orderbox_usatyann = [this.dialogues_usatyann,this.orders_usatyann];
         }
+
+        {//  3/1日誕生日企画　thanks giving 心眼のマサ
+            this.dialogues_singann_no_masa = [
+                "<br>私は心眼のマサ。<br>占いの館の支配人をしております。",
+                "<br>#command_user_name#様、日頃より館長の和がお世話になり、<br>大変感謝しております。",
+                "<br>今回、私めから日頃のお礼として<br>#command_user_name#様の明日#command_random_hour#時の運勢を占います",
+                "<br>見えてきましたぞ・・・・",
+                "<br>良い明日になりますように。<br>いつでもいらしてください。"
+            ]
+
+            this.orders_singann_no_masa = [
+                ["load"],
+                ["next"],
+                ["next"],
+                ["next"],
+                ["uranai","sinngann_no_masa"],
+                ["next"],
+                ["link","index.html"]
+
+            ];
+
+            this.orderbox_singann_no_masa = [this.dialogues_singann_no_masa, this.orders_singann_no_masa];
+        }
+
         this.dict_fortune_tellerbox = new Map();
         this.dict_fortune_tellerbox.set("apep.jpg",this.orderbox_gold);
         this.dict_fortune_tellerbox.set("basilisk.jpg",this.orderbox_relationship);
@@ -2531,8 +2596,7 @@ class SiteSystem{
         this.dict_fortune_tellerbox.set("itzamna.jpg",this.orderbox_health);
         this.dict_fortune_tellerbox.set("keiryu.jpg",this.orderbox_study);
         this.dict_fortune_tellerbox.set("usatyann.jpg",this.orderbox_usatyann);
-
-
+        this.dict_fortune_tellerbox.set("sinngann_no_masa.png",this.orderbox_singann_no_masa);
 
         //dictionaryに格納
 
